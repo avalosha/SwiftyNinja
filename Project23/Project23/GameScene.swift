@@ -127,13 +127,15 @@ class GameScene: SKScene {
         let nodesAtPoint = nodes(at: location)
 
         for case let node as SKSpriteNode in nodesAtPoint {
-            if node.name == "enemy" {
+            if node.name == "enemy" || node.name == "especial" {
                 // Crea un efecto de partículas
                 if let emitter = SKEmitterNode(fileNamed: "sliceHitEnemy") {
                     emitter.position = node.position
                     addChild(emitter)
                 }
 
+                score = node.name == "especial" ? score + 2 : score + 1
+                
                 // Borrar el nombre del nodo
                 node.name = ""
 
@@ -152,7 +154,7 @@ class GameScene: SKScene {
                 node.run(seq)
 
                 // Aumenta en 1 la puntuación
-                score += 1
+                //score += 1
 
                 // Elimina el nodo de la matriz
                 if let index = activeEnemies.firstIndex(of: node) {
@@ -263,7 +265,7 @@ class GameScene: SKScene {
         var enemyType = Int.random(in: 0...6)
 
         if forceBomb == .never {
-            enemyType = 1
+            enemyType = 2
         } else if forceBomb == .always {
             enemyType = 0
         }
@@ -298,6 +300,12 @@ class GameScene: SKScene {
                 emitter.position = CGPoint(x: 76, y: 64)
                 enemy.addChild(emitter)
             }
+        } else if enemyType ==  1 {
+            enemy = SKSpriteNode(imageNamed: "angryPenguin")
+            enemy.scale(to: CGSize(width: 0.4, height: 0.4))
+            run(SKAction.playSoundFileNamed("launch.caf", waitForCompletion: false))
+            enemy.name = "especial"
+            print("ESPECIAL")
         } else {
             enemy = SKSpriteNode(imageNamed: "penguin")
             run(SKAction.playSoundFileNamed("launch.caf", waitForCompletion: false))
@@ -357,7 +365,7 @@ class GameScene: SKScene {
                 if node.position.y < -140 {
                     node.removeAllActions()
 
-                    if node.name == "enemy" {
+                    if node.name == "enemy" || node.name == "especial" {
                         node.name = ""
                         subtractLife()
 
@@ -475,5 +483,13 @@ class GameScene: SKScene {
             livesImages[1].texture = SKTexture(imageNamed: "sliceLifeGone")
             livesImages[2].texture = SKTexture(imageNamed: "sliceLifeGone")
         }
+        
+        let ac = UIAlertController(title: "Game Over", message: "Your score is \(score)", preferredStyle: .alert)
+        ac.addAction(UIAlertAction(title: "", style: .default, handler: {
+            action in
+            
+        }))
+        view?.window?.rootViewController?.present(ac, animated: true)
     }
+    
 }
