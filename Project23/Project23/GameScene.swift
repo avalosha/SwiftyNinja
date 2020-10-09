@@ -302,10 +302,8 @@ class GameScene: SKScene {
             }
         } else if enemyType ==  1 {
             enemy = SKSpriteNode(imageNamed: "angryPenguin")
-            enemy.scale(to: CGSize(width: 0.4, height: 0.4))
             run(SKAction.playSoundFileNamed("launch.caf", waitForCompletion: false))
             enemy.name = "especial"
-            print("ESPECIAL")
         } else {
             enemy = SKSpriteNode(imageNamed: "penguin")
             run(SKAction.playSoundFileNamed("launch.caf", waitForCompletion: false))
